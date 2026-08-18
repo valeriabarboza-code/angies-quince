@@ -45,7 +45,15 @@ background-size:cover;background-position:center}
 .playbtn.on{animation:spin 5s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.playbtn.on{animation:none}}
-</style></head><body><div class="wrap">
+.env{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:9vh;background:#ECE2D1 url('envelope.jpg') center/cover no-repeat;cursor:pointer;transition:opacity .9s ease,transform .9s ease}
+.env.open{opacity:0;transform:scale(1.2);pointer-events:none}
+.env-hint{font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:#7c5e70;background:rgba(255,255,255,.62);padding:9px 18px;border-radius:22px;box-shadow:0 3px 12px rgba(90,60,90,.2);animation:epulse 1.9s ease-in-out infinite}
+@keyframes epulse{0%,100%{opacity:.55}50%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.env{transition:none}.env-hint{animation:none}}
+</style></head><body><div id="envelope" class="env">
+  <div class="env-hint">Toca para abrir</div>
+</div>
+<div class="wrap">
   <audio id="bgm" loop preload="auto" src="song.mp3"></audio>
   <button id="playbtn" class="playbtn" aria-label="Reproducir música">&#9835;</button>
   <section class="hero">
@@ -150,5 +158,17 @@ background-size:cover;background-position:center}
   function play(){a.play().then(function(){set(true);}).catch(function(){});}
   b.addEventListener('click',function(){on?(a.pause(),set(false)):play();});
   document.addEventListener('pointerdown',function(){if(!on)play();},{once:true});
+})();
+(function(){
+  var env=document.getElementById('envelope'); if(!env)return;
+  var opened=false;
+  function openEnv(){
+    if(opened)return; opened=true;
+    var a=document.getElementById('bgm'); if(a){a.play().then(function(){var b=document.getElementById('playbtn'); if(b){b.classList.add('on');b.innerHTML='&#10074;&#10074;';}}).catch(function(){});}
+    env.classList.add('open');
+    setTimeout(function(){env.style.display='none';window.scrollTo(0,0);document.documentElement.style.overflow='';document.body.style.overflow='';},950);
+  }
+  document.documentElement.style.overflow='hidden';document.body.style.overflow='hidden';
+  env.addEventListener('click',openEnv);
 })();
 </script></body></html>
